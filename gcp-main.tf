@@ -1,3 +1,10 @@
+resource "google_project_service" "run_api" {
+  service = "run.googleapis.com"
+
+  disable_on_destroy = true
+}
+
+
 resource "google_cloud_run_service" "playlist" {
   name     = "playlist"
   location = "us-central1"
