@@ -11,7 +11,7 @@ resource "google_cloud_run_service" "playlist" {
   template {
     spec {
       containers {
-        image = "gcr.io/terraform-cr/webapp"
+        image = "us-central1-docker.pkg.dev/hackathon-7aso-grupo-07/hackathon-7aso-grupo-07/myapp"
       }
     }
   }
