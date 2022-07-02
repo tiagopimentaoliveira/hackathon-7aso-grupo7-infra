@@ -1,10 +1,10 @@
 resource "google_sql_database" "database" {
-  name     = "playlistDB"
+  name     = "playlist"
   instance = google_sql_database_instance.instance.name
 }
 
 resource "google_sql_database_instance" "instance" {
-  name             = "playlistDB"
+  name             = "playlist"
   region           = "us-central1"
   database_version = "MYSQL_8_0"
   settings {
