@@ -39,7 +39,7 @@ resource "google_artifact_registry_repository" "my-repo" {
   provider = google-beta
 
   location = "us-central1"
-  repository_id = "var.project_id"
+  repository_id = var.project_id
   description = "Image DOCKER"
   format = "DOCKER"
 }
