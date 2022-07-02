@@ -29,14 +29,17 @@ data "google_iam_policy" "noauth" {
     ]
   }
 }
-# Enable public access on Cloud Run service
-resource "google_cloud_run_service_iam_policy" "noauth" {
-  location    = google_cloud_run_service.playlist.location
-  project     = google_cloud_run_service.playlist.project
-  service     = google_cloud_run_service.playlist.name
-  policy_data = data.google_iam_policy.noauth.policy_data
-}
+
 # Return service URL
 output "url" {
   value = "${google_cloud_run_service.playlist.status[0].url}"
+}
+
+resource "google_artifact_registry_repository" "my-repo" {
+  provider = google-beta
+
+  location = "us-central1"
+  repository_id = "var.project_id"
+  description = "Image DOCKER"
+  format = "DOCKER"
 }
