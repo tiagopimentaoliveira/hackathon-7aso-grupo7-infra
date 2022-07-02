@@ -1,31 +1,35 @@
-resource "google_artifact_registry_repository" "my-repo" {
-  provider = google-beta
-
+resource "google_cloud_run_service" "playlist" {
+  name     = "playlist"
   location = "us-central1"
-  repository_id = "hackathon-7aso-grupo-07"
-  description = "Image DOCKER"
-  format = "DOCKER"
+  template {
+    spec {
+      containers {
+        image = "gcr.io/terraform-cr/webapp"
+      }
+    }
+  }
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
 }
-
-# Cria uma VM no Google Cloud
-resource "google_compute_instance" "firstvm" {
-  name         = "helloworld"
-  machine_type = "n1-standard-1"
-  zone         = "us-central1-c"
-
-  # Defini a Imagem da VM
-  boot_disk {
-    initialize_params {
-      image = "ubuntu-2004-focal-v20220303a"
-    }
+# Create public access
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
   }
-
-  # Habilita rede para a VM com um IP público
-  network_interface {
-    network = "default" # Estamos usando a VPC default que já vem por padrão no projeto.
-
-    access_config {
-    // A presença do bloco access_config, mesmo sem argumentos, garante que a instância estará acessível pela internet.
-    }
-  }
+}
+# Enable public access on Cloud Run service
+resource "google_cloud_run_service_iam_policy" "noauth" {
+  location    = google_cloud_run_service.playlist.location
+  project     = google_cloud_run_service.playlist.project
+  service     = google_cloud_run_service.playlist.name
+  policy_data = data.google_iam_policy.noauth.policy_data
+}
+# Return service URL
+output "url" {
+  value = "${google_cloud_run_service.playlist.status[0].url}"
 }
